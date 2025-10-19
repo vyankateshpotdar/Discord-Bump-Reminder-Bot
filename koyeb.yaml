@@ -1,0 +1,12 @@
+name: discord-bump-reminder
+type: web
+env:
+  DISCORD_TOKEN: "YOUR_DISCORD_BOT_TOKEN"
+  CHANNEL_ID: "YOUR_CHANNEL_ID"
+  ROLE_ID: "YOUR_ROLE_ID"
+build:
+  type: python
+  commands:
+    - pip install -r requirements.txt
+run:
+  command: python reminder.py
