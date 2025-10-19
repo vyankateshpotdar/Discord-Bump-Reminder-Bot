@@ -1,13 +1,29 @@
+import os
 import discord
 from discord.ext import commands, tasks
 import datetime
-from keep_alive import keep_alive
-keep_alive()
+from flask import Flask
+from threading import Thread
+
+# === WEB SERVER (keep_alive replacement) ===
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "✅ Discord Bump Reminder Bot is running on Koyeb!"
+
+def run_web():
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.start()
 
 # === CONFIG ===
-TOKEN = "" 
-CHANNEL_ID = 
-ROLE_ID = 
+TOKEN = os.getenv("DISCORD_TOKEN")
+CHANNEL_ID = int(os.getenv("CHANNEL_ID", 0))
+ROLE_ID = int(os.getenv("ROLE_ID", 0))
+
 # === SETUP ===
 intents = discord.Intents.default()
 intents.message_content = True
@@ -37,4 +53,6 @@ async def nextbump(ctx):
     else:
         await ctx.send("The reminder hasn't started yet.")
 
-bot.run(TOKEN)
+if __name__ == "__main__":
+    keep_alive()
+    bot.run(TOKEN)
